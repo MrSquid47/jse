@@ -21,6 +21,7 @@
 #include <tf2attributes>
 #include <tf2items>
 #include <socket>
+#include <regex>
 
 #include <jse_jumpbot>
 
@@ -265,6 +266,8 @@ Handle g_hSDKGetMaxClip1;
 
 GlobalForward g_hClientRestoreForward;
 
+bool g_bUseCustomBotModels = false;
+
 public Plugin myinfo = {
 	name = "Jump Server Essentials - JumpBot",
 	author = PLUGIN_AUTHOR,
@@ -451,6 +454,9 @@ public void OnPluginStart() {
 			LogError("Failed to load jse.regen gamedata.  Weapon clip regen may not be accurate.");
 		}
 	}
+
+	if (DirExists("models/jumpacademy/bots"))
+		g_bUseCustomBotModels = true;
 }
 
 public void OnPluginEnd() {
@@ -641,8 +647,13 @@ public void OnMapStart() {
 			TF2_GetClassName(iClass, sClassName, sizeof(sClassName));
 		}
 		
-		Format(sModel, sizeof(sModel), "models/bots/%s/bot_%s.mdl", sClassName, sClassName);
-		PrecacheModel(sModel);
+		if (g_bUseCustomBotModels) { // Use custom bot models if available
+			Format(sModel, sizeof(sModel), "models/jumpacademy/bots/bot_%s.mdl", sClassName);
+			PrecacheModel(sModel);
+   		} else {
+			Format(sModel, sizeof(sModel), "models/bots/%s/bot_%s.mdl", sClassName, sClassName);
+			PrecacheModel(sModel);
+		}
 	}
 	
 	char sCacheFolder[PLATFORM_MAX_PATH];
@@ -5039,7 +5050,13 @@ void setRobotModel(int iClient) {
 	} else {
 		TF2_GetClassName(iClass, sClassName, sizeof(sClassName));
 	}
-	FormatEx(sModel, sizeof(sModel), "models/bots/%s/bot_%s.mdl", sClassName, sClassName);
+
+	if (g_bUseCustomBotModels) { // Use custom bot models if available
+		FormatEx(sModel, sizeof(sModel), "models/jumpacademy/bots/bot_%s.mdl", sClassName);
+   	} else {
+		FormatEx(sModel, sizeof(sModel), "models/bots/%s/bot_%s.mdl", sClassName, sClassName);
+	}
+	
 	
 	SetVariantString(sModel);
 	AcceptEntityInput(iClient, "SetCustomModel");
