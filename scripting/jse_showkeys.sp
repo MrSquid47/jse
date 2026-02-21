@@ -335,8 +335,6 @@ public Action OnPlayerRunCmd(int iClient, int &iButtons, int &iImpulse, float fV
 
 				iHeight = RoundToNearest(fOrigin[2] - fHit[2]);
 
-				//Format(sAngBuf, sizeof(sAngBuf), "Ang: %s.%s %s.%s\nHeight: %i", sEyeAng[0], sEyeAngFrac[0], sEyeAng[1], sEyeAngFrac[1], iHeight);
-
 				char sLabelAng[32], sLabelHght[32], sValVert[32], sValHoriz[32], sValHght[32];
 				Format(sLabelAng, sizeof(sLabelAng), "Ang: ");
 				Format(sLabelHght, sizeof(sLabelHght), "\nHeight: ");
